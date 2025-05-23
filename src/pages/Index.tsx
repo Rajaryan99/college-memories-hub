@@ -49,7 +49,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50 to-amber-50">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 overflow-hidden">
       <Navigation />
       <Hero />
       
@@ -65,12 +65,16 @@ const Index = () => {
         <FriendsSection />
       </main>
       
-      <footer className="py-16 text-center text-gray-600">
+      <footer className="py-16 text-center text-indigo-600 relative overflow-hidden">
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-0 left-1/4 w-64 h-64 rounded-full bg-indigo-100/50 blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-64 h-64 rounded-full bg-purple-100/50 blur-3xl"></div>
+        </div>
         <div className="container mx-auto px-4">
           <p className="text-lg font-light">
             "College years are the best years of life" - Living proof 📚✨
           </p>
-          <p className="mt-4 opacity-70">Made with 💙 by Rajaryan</p>
+          <p className="mt-4 opacity-70">Made with 💜 by Rajaryan</p>
         </div>
       </footer>
     </div>
@@ -78,3 +82,4 @@ const Index = () => {
 };
 
 export default Index;
+
