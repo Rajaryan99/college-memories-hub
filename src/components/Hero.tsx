@@ -7,9 +7,9 @@ export const Hero = () => {
         <img 
           src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158" 
           alt="College friends" 
-          className="w-full h-full object-cover opacity-20"
+          className="w-full h-full object-cover opacity-60"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/80 to-orange-50/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-white/50 to-orange-50/70"></div>
       </div>
       
       <div className="container mx-auto px-4 text-center relative z-10">
