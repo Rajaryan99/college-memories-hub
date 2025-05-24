@@ -16,7 +16,7 @@ interface GallerySectionProps {
 export const GallerySection = ({ id, title, description, index }: GallerySectionProps) => {
   const [showUpload, setShowUpload] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const { photos, addPhoto, removePhoto } = useGalleryPhotos();
+  const { photos, addPhoto, removePhoto, isLoading } = useGalleryPhotos();
   const isEven = index % 2 === 0;
 
   const categoryPhotos = photos[id] || [];
@@ -29,6 +29,17 @@ export const GallerySection = ({ id, title, description, index }: GallerySection
   const handleRemovePhoto = (photoIndex: number) => {
     removePhoto(id, photoIndex);
   };
+
+  if (isLoading) {
+    return (
+      <section id={id} className="py-20 relative overflow-hidden">
+        <div className="container mx-auto px-4 text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-500 mx-auto"></div>
+          <p className="mt-4 text-lg text-purple-600">Loading {title}...</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id={id} className="py-20 relative overflow-hidden">
@@ -82,39 +93,52 @@ export const GallerySection = ({ id, title, description, index }: GallerySection
 
           {/* Image Grid */}
           <div className="lg:w-1/2">
-            <div className="grid grid-cols-2 gap-4">
-              {categoryPhotos.map((image, imgIndex) => (
-                <div
-                  key={imgIndex}
-                  className={`relative group overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 ${
-                    imgIndex === 0 ? 'col-span-2 h-64' : 'h-48'
-                  } border border-indigo-100/50`}
-                >
-                  <img
-                    src={image}
-                    alt={`${title} memory ${imgIndex + 1}`}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  
-                  {/* Delete button in edit mode */}
-                  {editMode && (
-                    <button
-                      onClick={() => handleRemovePhoto(imgIndex)}
-                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  )}
-                  
-                  <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="w-8 h-8 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm">+</span>
+            {categoryPhotos.length > 0 ? (
+              <div className="grid grid-cols-2 gap-4">
+                {categoryPhotos.map((image, imgIndex) => (
+                  <div
+                    key={imgIndex}
+                    className={`relative group overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 ${
+                      imgIndex === 0 ? 'col-span-2 h-64' : 'h-48'
+                    } border border-indigo-100/50`}
+                  >
+                    <img
+                      src={image}
+                      alt={`${title} memory ${imgIndex + 1}`}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    
+                    {/* Delete button in edit mode */}
+                    {editMode && (
+                      <button
+                        onClick={() => handleRemovePhoto(imgIndex)}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                    
+                    <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="w-8 h-8 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center">
+                        <span className="text-white text-sm">+</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-500 text-lg mb-4">No photos yet</p>
+                <Button
+                  onClick={() => setShowUpload(true)}
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add First Photo
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -9,7 +9,7 @@ import { Camera, Edit } from 'lucide-react';
 export const FriendsSection = () => {
   const [editMode, setEditMode] = useState(false);
   const [showUpload, setShowUpload] = useState<string | null>(null);
-  const { photos, addPhoto } = useGalleryPhotos();
+  const { photos, addPhoto, isLoading } = useGalleryPhotos();
 
   const friends = [
     {
@@ -77,6 +77,17 @@ export const FriendsSection = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <section id="friends" className="py-20 relative overflow-hidden">
+        <div className="container mx-auto px-4 text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-500 mx-auto"></div>
+          <p className="mt-4 text-lg text-purple-600">Loading friends...</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="friends" className="py-20 relative overflow-hidden">
       {/* Background decorative elements */}
@@ -119,7 +130,7 @@ export const FriendsSection = () => {
                 <div className={`relative bg-white/90 backdrop-blur-sm rounded-3xl p-8 transform group-hover:-translate-y-2 transition-all duration-300 shadow-lg group-hover:shadow-xl ${friend.shadowColor}`}>
                   <div className="text-center">
                     <div className="relative mb-6">
-                      <Avatar className="w-32 h-32 mx-auto border-4 border-white shadow-md group-hover:scale-110 transition-transform duration-300">
+                      <Avatar className="w-40 h-40 mx-auto border-4 border-white shadow-md group-hover:scale-110 transition-transform duration-300">
                         <AvatarImage src={friend.avatar} alt={friend.name} className="object-cover" />
                         <AvatarFallback className="text-xl">{friend.name.slice(0, 2)}</AvatarFallback>
                       </Avatar>

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { PhotoUpload } from './PhotoUpload';
 import { useGalleryPhotos } from '../hooks/useGalleryPhotos';
@@ -8,7 +7,7 @@ import { Camera, Edit } from 'lucide-react';
 export const Hero = () => {
   const [showUpload, setShowUpload] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const { photos, addPhoto } = useGalleryPhotos();
+  const { photos, addPhoto, isLoading } = useGalleryPhotos();
   
   // Get hero background image from photos or use default
   const heroBackgroundImage = photos['hero-background']?.[0] || "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07";
@@ -19,6 +18,17 @@ export const Hero = () => {
     setEditMode(false);
   };
 
+  if (isLoading) {
+    return (
+      <section className="min-h-screen flex items-center justify-center pt-16">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-500 mx-auto"></div>
+          <p className="mt-4 text-lg text-purple-600">Loading memories...</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="home" className="min-h-screen flex items-center justify-center pt-16 relative overflow-hidden">
       {/* Background Image with Animation */}
@@ -26,9 +36,9 @@ export const Hero = () => {
         <img 
           src={heroBackgroundImage} 
           alt="College friends" 
-          className="w-full h-full object-cover opacity-90"
+          className="w-full h-full object-cover opacity-95"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-50/60 to-indigo-50/70 backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-50/50 to-indigo-50/60 backdrop-blur-sm"></div>
         
         {/* Animated Elements */}
         <div className="absolute top-20 left-10 w-20 h-20 rounded-full bg-amber-300/20 animate-pulse"></div>
