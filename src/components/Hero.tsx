@@ -1,22 +1,73 @@
 
+import { useState } from 'react';
+import { PhotoUpload } from './PhotoUpload';
+import { useGalleryPhotos } from '../hooks/useGalleryPhotos';
+import { Button } from './ui/button';
+import { Camera, Edit } from 'lucide-react';
 
 export const Hero = () => {
+  const [showUpload, setShowUpload] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const { photos, addPhoto } = useGalleryPhotos();
+  
+  // Get hero background image from photos or use default
+  const heroBackgroundImage = photos['hero-background']?.[0] || "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07";
+
+  const handlePhotoUploaded = (url: string) => {
+    addPhoto('hero-background', url);
+    setShowUpload(false);
+    setEditMode(false);
+  };
+
   return (
     <section id="home" className="min-h-screen flex items-center justify-center pt-16 relative overflow-hidden">
       {/* Background Image with Animation */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07" 
+          src={heroBackgroundImage} 
           alt="College friends" 
-          className="w-full h-full object-cover opacity-60"
+          className="w-full h-full object-cover opacity-80"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-50/60 to-indigo-50/70 backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-50/70 to-indigo-50/80 backdrop-blur-sm"></div>
         
         {/* Animated Elements */}
         <div className="absolute top-20 left-10 w-20 h-20 rounded-full bg-amber-300/20 animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-32 h-32 rounded-full bg-teal-300/20 animate-pulse" style={{animationDelay: '1s'}}></div>
         <div className="absolute top-1/3 right-1/4 w-16 h-16 rounded-full bg-rose-300/20 animate-pulse" style={{animationDelay: '1.5s'}}></div>
       </div>
+
+      {/* Photo Upload Controls */}
+      <div className="absolute top-20 right-4 z-20 flex gap-2">
+        <Button
+          onClick={() => setEditMode(!editMode)}
+          variant="outline"
+          size="sm"
+          className="bg-white/80 backdrop-blur-sm border-purple-300 text-purple-600 hover:bg-purple-50"
+        >
+          <Edit className="w-4 h-4 mr-2" />
+          {editMode ? 'Done' : 'Edit Background'}
+        </Button>
+        {editMode && (
+          <Button
+            onClick={() => setShowUpload(!showUpload)}
+            size="sm"
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+          >
+            <Camera className="w-4 h-4 mr-2" />
+            Change Photo
+          </Button>
+        )}
+      </div>
+
+      {/* Upload Component */}
+      {showUpload && editMode && (
+        <div className="absolute top-32 right-4 z-20 w-80">
+          <PhotoUpload 
+            category="hero-background" 
+            onPhotoUploaded={handlePhotoUploaded}
+          />
+        </div>
+      )}
       
       <div className="container mx-auto px-4 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
@@ -69,4 +120,3 @@ export const Hero = () => {
     </section>
   );
 };
-

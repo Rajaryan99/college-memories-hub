@@ -1,58 +1,81 @@
 
+import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PhotoUpload } from './PhotoUpload';
+import { useGalleryPhotos } from '../hooks/useGalleryPhotos';
+import { Button } from './ui/button';
+import { Camera, Edit } from 'lucide-react';
 
 export const FriendsSection = () => {
+  const [editMode, setEditMode] = useState(false);
+  const [showUpload, setShowUpload] = useState<string | null>(null);
+  const { photos, addPhoto } = useGalleryPhotos();
+
   const friends = [
     {
       name: "Rajaryan",
       caption: "The Storyteller",
-      avatar: "https://images.unsplash.com/photo-1472396961693-142e6e269027?w=300&h=300&fit=crop&crop=face",
+      avatar: photos['friend-rajaryan']?.[0] || "https://images.unsplash.com/photo-1472396961693-142e6e269027?w=300&h=300&fit=crop&crop=face",
       color: "from-indigo-400 to-purple-400",
-      shadowColor: "shadow-indigo-200"
+      shadowColor: "shadow-indigo-200",
+      id: "friend-rajaryan"
     },
     {
       name: "Satish",
       caption: "The Comedian",
-      avatar: "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=300&h=300&fit=crop&crop=face",
+      avatar: photos['friend-satish']?.[0] || "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=300&h=300&fit=crop&crop=face",
       color: "from-blue-400 to-cyan-400",
-      shadowColor: "shadow-blue-200"
+      shadowColor: "shadow-blue-200",
+      id: "friend-satish"
     },
     {
       name: "Nikhil",
       caption: "Study Partner",
-      avatar: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=300&h=300&fit=crop&crop=face",
+      avatar: photos['friend-nikhil']?.[0] || "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=300&h=300&fit=crop&crop=face",
       color: "from-teal-400 to-emerald-400",
-      shadowColor: "shadow-teal-200"
+      shadowColor: "shadow-teal-200",
+      id: "friend-nikhil"
     },
     {
       name: "Arnav",
       caption: "Adventure Seeker",
-      avatar: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=300&h=300&fit=crop&crop=face",
+      avatar: photos['friend-arnav']?.[0] || "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=300&h=300&fit=crop&crop=face",
       color: "from-purple-400 to-violet-400",
-      shadowColor: "shadow-purple-200"
+      shadowColor: "shadow-purple-200",
+      id: "friend-arnav"
     },
     {
       name: "Misti",
       caption: "The Organizer",
-      avatar: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=300&fit=crop&crop=face",
+      avatar: photos['friend-misti']?.[0] || "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=300&fit=crop&crop=face",
       color: "from-pink-400 to-rose-400",
-      shadowColor: "shadow-pink-200"
+      shadowColor: "shadow-pink-200",
+      id: "friend-misti"
     },
     {
       name: "Sandhya",
       caption: "The Motivator",
-      avatar: "https://images.unsplash.com/photo-1615729947596-a598e5de0ab3?w=300&h=300&fit=crop&crop=face",
+      avatar: photos['friend-sandhya']?.[0] || "https://images.unsplash.com/photo-1615729947596-a598e5de0ab3?w=300&h=300&fit=crop&crop=face",
       color: "from-indigo-400 to-blue-400",
-      shadowColor: "shadow-indigo-200"
+      shadowColor: "shadow-indigo-200",
+      id: "friend-sandhya"
     },
     {
       name: "Anugya",
       caption: "Canteen Queen",
-      avatar: "https://images.unsplash.com/photo-1488972685288-c3fd157d7c7a?w=300&h=300&fit=crop&crop=face",
+      avatar: photos['friend-anugya']?.[0] || "https://images.unsplash.com/photo-1488972685288-c3fd157d7c7a?w=300&h=300&fit=crop&crop=face",
       color: "from-teal-400 to-cyan-400", 
-      shadowColor: "shadow-teal-200"
+      shadowColor: "shadow-teal-200",
+      id: "friend-anugya"
     }
   ];
+
+  const handlePhotoUploaded = (url: string) => {
+    if (showUpload) {
+      addPhoto(showUpload, url);
+      setShowUpload(null);
+    }
+  };
 
   return (
     <section id="friends" className="py-20 relative overflow-hidden">
@@ -70,6 +93,18 @@ export const FriendsSection = () => {
           <p className="text-xl text-indigo-600 max-w-2xl mx-auto leading-relaxed">
             The incredible humans who made college unforgettable. Each one brings their own magic to our squad.
           </p>
+          
+          {/* Edit Mode Toggle */}
+          <div className="mt-6">
+            <Button
+              onClick={() => setEditMode(!editMode)}
+              variant="outline"
+              className="border-purple-300 text-purple-600 hover:bg-purple-50"
+            >
+              <Edit className="w-4 h-4 mr-2" />
+              {editMode ? 'Done Editing' : 'Edit Photos'}
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -81,14 +116,24 @@ export const FriendsSection = () => {
             >
               <div className="relative">
                 <div className={`absolute inset-0 bg-gradient-to-br ${friend.color} rounded-3xl transform rotate-3 group-hover:rotate-6 transition-transform duration-300`}></div>
-                <div className={`relative bg-white/90 backdrop-blur-sm rounded-3xl p-6 transform group-hover:-translate-y-2 transition-all duration-300 shadow-lg group-hover:shadow-xl ${friend.shadowColor}`}>
+                <div className={`relative bg-white/90 backdrop-blur-sm rounded-3xl p-8 transform group-hover:-translate-y-2 transition-all duration-300 shadow-lg group-hover:shadow-xl ${friend.shadowColor}`}>
                   <div className="text-center">
-                    <div className="relative mb-4">
-                      <Avatar className="w-20 h-20 mx-auto border-4 border-white shadow-md group-hover:scale-110 transition-transform duration-300">
-                        <AvatarImage src={friend.avatar} alt={friend.name} />
-                        <AvatarFallback>{friend.name.slice(0, 2)}</AvatarFallback>
+                    <div className="relative mb-6">
+                      <Avatar className="w-32 h-32 mx-auto border-4 border-white shadow-md group-hover:scale-110 transition-transform duration-300">
+                        <AvatarImage src={friend.avatar} alt={friend.name} className="object-cover" />
+                        <AvatarFallback className="text-xl">{friend.name.slice(0, 2)}</AvatarFallback>
                       </Avatar>
                       <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${friend.color} opacity-20 group-hover:opacity-30 transition-opacity duration-300`}></div>
+                      
+                      {/* Upload button in edit mode */}
+                      {editMode && (
+                        <button
+                          onClick={() => setShowUpload(friend.id)}
+                          className="absolute -bottom-2 -right-2 bg-purple-500 text-white rounded-full p-2 hover:bg-purple-600 transition-colors shadow-lg"
+                        >
+                          <Camera className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
                     <h3 className="text-xl font-bold text-indigo-800 mb-2">
                       {friend.name}
@@ -99,6 +144,23 @@ export const FriendsSection = () => {
                   </div>
                 </div>
               </div>
+              
+              {/* Upload Component */}
+              {showUpload === friend.id && (
+                <div className="mt-4">
+                  <PhotoUpload 
+                    category={friend.id} 
+                    onPhotoUploaded={handlePhotoUploaded}
+                  />
+                  <Button
+                    onClick={() => setShowUpload(null)}
+                    variant="outline"
+                    className="mt-2 w-full"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -114,4 +176,3 @@ export const FriendsSection = () => {
     </section>
   );
 };
-

@@ -21,7 +21,15 @@ const DEFAULT_IMAGES = {
     "https://images.unsplash.com/photo-1472396961693-142e6e269027",
     "https://images.unsplash.com/photo-1433086966358-54859d0ed716",
     "https://images.unsplash.com/photo-1500673922987-e212871fec22"
-  ]
+  ],
+  "hero-background": [],
+  "friend-rajaryan": [],
+  "friend-satish": [],
+  "friend-nikhil": [],
+  "friend-arnav": [],
+  "friend-misti": [],
+  "friend-sandhya": [],
+  "friend-anugya": []
 };
 
 export const useGalleryPhotos = () => {
