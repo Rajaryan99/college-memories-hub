@@ -26,9 +26,9 @@ export const Hero = () => {
         <img 
           src={heroBackgroundImage} 
           alt="College friends" 
-          className="w-full h-full object-cover opacity-80"
+          className="w-full h-full object-cover opacity-90"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-50/70 to-indigo-50/80 backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-50/60 to-indigo-50/70 backdrop-blur-sm"></div>
         
         {/* Animated Elements */}
         <div className="absolute top-20 left-10 w-20 h-20 rounded-full bg-amber-300/20 animate-pulse"></div>

@@ -34,9 +34,28 @@ const DEFAULT_IMAGES = {
 
 export const useGalleryPhotos = () => {
   const [photos, setPhotos] = useState<Record<string, string[]>>(() => {
-    const saved = localStorage.getItem('gallery-photos');
-    return saved ? JSON.parse(saved) : DEFAULT_IMAGES;
+    try {
+      const saved = localStorage.getItem('gallery-photos');
+      if (saved) {
+        const parsedPhotos = JSON.parse(saved);
+        // Merge with default images to ensure all categories exist
+        return { ...DEFAULT_IMAGES, ...parsedPhotos };
+      }
+      return DEFAULT_IMAGES;
+    } catch (error) {
+      console.error('Error loading photos from localStorage:', error);
+      return DEFAULT_IMAGES;
+    }
   });
+
+  // Save to localStorage whenever photos change
+  useEffect(() => {
+    try {
+      localStorage.setItem('gallery-photos', JSON.stringify(photos));
+    } catch (error) {
+      console.error('Error saving photos to localStorage:', error);
+    }
+  }, [photos]);
 
   const addPhoto = (category: string, url: string) => {
     setPhotos(prev => {
@@ -44,7 +63,6 @@ export const useGalleryPhotos = () => {
         ...prev,
         [category]: [...(prev[category] || []), url]
       };
-      localStorage.setItem('gallery-photos', JSON.stringify(updated));
       return updated;
     });
   };
@@ -55,7 +73,6 @@ export const useGalleryPhotos = () => {
         ...prev,
         [category]: prev[category]?.filter((_, i) => i !== index) || []
       };
-      localStorage.setItem('gallery-photos', JSON.stringify(updated));
       return updated;
     });
   };
