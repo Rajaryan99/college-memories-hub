@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PhotoUpload } from './PhotoUpload';
@@ -70,8 +69,13 @@ export const FriendsSection = () => {
     }
   ];
 
-  const handlePhotoUploaded = (url: string) => {
+  const handlePhotoUploaded = async (url: string) => {
     if (showUpload) {
+      // First remove any existing photos for this friend
+      if (photos[showUpload]?.[0]) {
+        await removePhoto(showUpload, 0);
+      }
+      // Then add the new photo
       addPhoto(showUpload, url);
       setShowUpload(null);
     }
