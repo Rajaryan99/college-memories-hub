@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PhotoUpload } from './PhotoUpload';
@@ -14,7 +13,7 @@ export const FriendsSection = () => {
   const friends = [
     {
       name: "Rajaryan",
-      caption: "The Storyteller",
+      caption: "The Creative Genius",
       avatar: photos['friend-rajaryan']?.[0] || "https://images.unsplash.com/photo-1472396961693-142e6e269027?w=300&h=300&fit=crop&crop=face",
       color: "from-indigo-400 to-purple-400",
       shadowColor: "shadow-indigo-200",
@@ -22,7 +21,7 @@ export const FriendsSection = () => {
     },
     {
       name: "Satish",
-      caption: "The Comedian",
+      caption: "Adventure Seeker",
       avatar: photos['friend-satish']?.[0] || "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=300&h=300&fit=crop&crop=face",
       color: "from-blue-400 to-cyan-400",
       shadowColor: "shadow-blue-200",
@@ -38,7 +37,7 @@ export const FriendsSection = () => {
     },
     {
       name: "Arnav",
-      caption: "Adventure Seeker",
+      caption: "The Organizer",
       avatar: photos['friend-arnav']?.[0] || "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=300&h=300&fit=crop&crop=face",
       color: "from-purple-400 to-violet-400",
       shadowColor: "shadow-purple-200",
@@ -46,7 +45,7 @@ export const FriendsSection = () => {
     },
     {
       name: "Misti",
-      caption: "The Organizer",
+      caption: "The Storyteller (OGGY)",
       avatar: photos['friend-misti']?.[0] || "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=300&fit=crop&crop=face",
       color: "from-pink-400 to-rose-400",
       shadowColor: "shadow-pink-200",
@@ -54,7 +53,7 @@ export const FriendsSection = () => {
     },
     {
       name: "Sandhya",
-      caption: "The Motivator",
+      caption: "The Beauty Queen",
       avatar: photos['friend-sandhya']?.[0] || "https://images.unsplash.com/photo-1615729947596-a598e5de0ab3?w=300&h=300&fit=crop&crop=face",
       color: "from-indigo-400 to-blue-400",
       shadowColor: "shadow-indigo-200",
