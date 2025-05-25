@@ -19,10 +19,13 @@ export const PhotoUpload = ({ category, onPhotoUploaded }: PhotoUploadProps) => 
   const uploadPhoto = async (file: File) => {
     try {
       setUploading(true);
+      console.log('Starting upload for file:', file.name, 'to category:', category);
       
       // Create a unique filename
       const fileExt = file.name.split('.').pop();
-      const fileName = `${category}/${Date.now()}.${fileExt}`;
+      const fileName = `${category}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+      
+      console.log('Generated filename:', fileName);
       
       // Upload file to Supabase storage
       const { data, error } = await supabase.storage
@@ -30,13 +33,18 @@ export const PhotoUpload = ({ category, onPhotoUploaded }: PhotoUploadProps) => 
         .upload(fileName, file);
 
       if (error) {
+        console.error('Storage upload error:', error);
         throw error;
       }
+
+      console.log('File uploaded successfully:', data);
 
       // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from('college_memories')
         .getPublicUrl(data.path);
+
+      console.log('Generated public URL:', publicUrl);
 
       onPhotoUploaded(publicUrl);
       
@@ -48,7 +56,7 @@ export const PhotoUpload = ({ category, onPhotoUploaded }: PhotoUploadProps) => 
       console.error('Error uploading photo:', error);
       toast({
         title: "Error",
-        description: "Failed to upload photo",
+        description: "Failed to upload photo. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -59,6 +67,7 @@ export const PhotoUpload = ({ category, onPhotoUploaded }: PhotoUploadProps) => 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      console.log('File selected:', file.name, file.type, file.size);
       uploadPhoto(file);
     }
   };
@@ -79,7 +88,9 @@ export const PhotoUpload = ({ category, onPhotoUploaded }: PhotoUploadProps) => 
     setDragActive(false);
     
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      uploadPhoto(e.dataTransfer.files[0]);
+      const file = e.dataTransfer.files[0];
+      console.log('File dropped:', file.name, file.type, file.size);
+      uploadPhoto(file);
     }
   };
 
@@ -102,13 +113,13 @@ export const PhotoUpload = ({ category, onPhotoUploaded }: PhotoUploadProps) => 
             Upload photos for {category}
           </p>
           <p className="text-sm text-gray-500">
-            Drag and drop or click to select
+            Drag and drop or click to select (JPG, PNG, GIF)
           </p>
         </div>
         <div>
           <Input
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/gif,image/webp"
             onChange={handleFileSelect}
             disabled={uploading}
             className="hidden"

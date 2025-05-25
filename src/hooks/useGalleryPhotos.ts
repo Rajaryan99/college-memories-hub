@@ -33,6 +33,14 @@ const DEFAULT_IMAGES = {
   "friend-anugya": []
 };
 
+interface GalleryPhoto {
+  id: string;
+  category: string;
+  image_url: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export const useGalleryPhotos = () => {
   const [photos, setPhotos] = useState<Record<string, string[]>>(DEFAULT_IMAGES);
   const [isLoading, setIsLoading] = useState(true);
@@ -62,7 +70,7 @@ export const useGalleryPhotos = () => {
       const groupedPhotos: Record<string, string[]> = { ...DEFAULT_IMAGES };
       
       if (data && data.length > 0) {
-        data.forEach((photo) => {
+        (data as GalleryPhoto[]).forEach((photo) => {
           if (!groupedPhotos[photo.category]) {
             groupedPhotos[photo.category] = [];
           }
