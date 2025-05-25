@@ -1,14 +1,15 @@
+
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PhotoUpload } from './PhotoUpload';
 import { useGalleryPhotos } from '../hooks/useGalleryPhotos';
 import { Button } from './ui/button';
-import { Camera, Edit } from 'lucide-react';
+import { Camera, Edit, X } from 'lucide-react';
 
 export const FriendsSection = () => {
   const [editMode, setEditMode] = useState(false);
   const [showUpload, setShowUpload] = useState<string | null>(null);
-  const { photos, addPhoto, isLoading } = useGalleryPhotos();
+  const { photos, addPhoto, removePhoto, isLoading } = useGalleryPhotos();
 
   const friends = [
     {
@@ -76,6 +77,10 @@ export const FriendsSection = () => {
     }
   };
 
+  const handleDeletePhoto = (friendId: string) => {
+    removePhoto(friendId, 0); // Remove the first (and only) photo for this friend
+  };
+
   if (isLoading) {
     return (
       <section id="friends" className="py-20 relative overflow-hidden">
@@ -135,14 +140,28 @@ export const FriendsSection = () => {
                       </Avatar>
                       <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${friend.color} opacity-20 group-hover:opacity-30 transition-opacity duration-300`}></div>
                       
-                      {/* Upload button in edit mode */}
+                      {/* Upload and Delete buttons in edit mode */}
                       {editMode && (
-                        <button
-                          onClick={() => setShowUpload(friend.id)}
-                          className="absolute -bottom-2 -right-2 bg-purple-500 text-white rounded-full p-2 hover:bg-purple-600 transition-colors shadow-lg"
-                        >
-                          <Camera className="w-4 h-4" />
-                        </button>
+                        <div className="absolute -bottom-2 -right-2 flex gap-1">
+                          <button
+                            onClick={() => setShowUpload(friend.id)}
+                            className="bg-purple-500 text-white rounded-full p-2 hover:bg-purple-600 transition-colors shadow-lg"
+                            title="Upload new photo"
+                          >
+                            <Camera className="w-4 h-4" />
+                          </button>
+                          
+                          {/* Show delete button only if there's an uploaded photo */}
+                          {photos[friend.id]?.[0] && (
+                            <button
+                              onClick={() => handleDeletePhoto(friend.id)}
+                              className="bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors shadow-lg"
+                              title="Delete current photo"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                       )}
                     </div>
                     <h3 className="text-xl font-bold text-indigo-800 mb-2">
