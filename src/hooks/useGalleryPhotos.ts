@@ -4,33 +4,33 @@ import { supabase } from '@/integrations/supabase/client';
 
 const DEFAULT_IMAGES = {
   "vyom2025": [
-    "https://images.unsplash.com/photo-1519389950473-47ba0277781c",
-    "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
-    "https://images.unsplash.com/photo-1498050108023-c5249f4df085"
+    "public/image/vyom/1.jpg",
+    "public/image/vyom/2.jpg",
+    "public/image/vyom/3.jpg",
   ],
   "college-days": [
-    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
-    "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
-    "https://images.unsplash.com/photo-1461749280684-dccba630e2f6"
+    "public/image/college_days/1.jpg",
+    "public/image/college_days/2.jpg",
+    "public/image/college_days/3.jpg",
   ],
   "college-hangout": [
-    "https://images.unsplash.com/photo-1466442929976-97f336a657be",
-    "https://images.unsplash.com/photo-1721322800607-8c38375eef04",
-    "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9"
+    "public/image/college_hangout/1 (1).jpg",
+    "public/image/college_hangout/1 (2).jpg",
+    "public/image/college_hangout/1 (3).jpg",
   ],
   "hidden-places": [
-    "https://images.unsplash.com/photo-1472396961693-142e6e269027",
-    "https://images.unsplash.com/photo-1433086966358-54859d0ed716",
-    "https://images.unsplash.com/photo-1500673922987-e212871fec22"
+    "public/image/hidden_places/1.jpg",
+    "public/image/hidden_places/2.jpg",
+    "public/image/hidden_places/3.jpg",
   ],
   "hero-background": [],
-  "friend-rajaryan": [],
-  "friend-satish": [],
-  "friend-nikhil": [],
-  "friend-arnav": [],
-  "friend-misti": [],
-  "friend-sandhya": [],
-  "friend-anugya": []
+  "friend-rajaryan": ["public/image/my_people/raj.jpeg"],
+  "friend-satish": ["public/image/my_people/satish.jpg"],
+  "friend-nikhil": ["public/image/my_people/nik.jpg"],
+  "friend-arnav": ["public/image/my_people/arnav.jpg"],
+  "friend-misti": ["public/image/my_people/misti.jpg"],
+  "friend-sandhya": ["public/image/my_people/sandhya.jpg"],
+  "friend-anugya": ["public/image/my_people/anugya.jpg"],
 };
 
 interface GalleryPhoto {
