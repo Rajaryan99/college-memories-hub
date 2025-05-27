@@ -66,15 +66,22 @@ export const useGalleryPhotos = () => {
 
       console.log('Loaded photos from database:', data);
 
-      // Group photos by category
+      // Start with default images
       const groupedPhotos: Record<string, string[]> = { ...DEFAULT_IMAGES };
       
+      // Replace default images with uploaded ones where they exist
       if (data && data.length > 0) {
         (data as GalleryPhoto[]).forEach((photo) => {
-          if (!groupedPhotos[photo.category]) {
-            groupedPhotos[photo.category] = [];
+          // For friend categories, replace the default image entirely
+          if (photo.category.startsWith('friend-')) {
+            groupedPhotos[photo.category] = [photo.image_url];
+          } else {
+            // For other categories, add to existing images
+            if (!groupedPhotos[photo.category]) {
+              groupedPhotos[photo.category] = [];
+            }
+            groupedPhotos[photo.category].push(photo.image_url);
           }
-          groupedPhotos[photo.category].push(photo.image_url);
         });
       }
 
@@ -90,7 +97,20 @@ export const useGalleryPhotos = () => {
     try {
       console.log('Adding photo to database:', { category, url });
       
-      // Add to database
+      // For friend categories, replace existing photo if it exists
+      if (category.startsWith('friend-')) {
+        // First, delete any existing photo for this friend
+        const { error: deleteError } = await supabase
+          .from('gallery_photos')
+          .delete()
+          .eq('category', category);
+
+        if (deleteError) {
+          console.error('Error deleting existing photo:', deleteError);
+        }
+      }
+      
+      // Add new photo to database
       const { error } = await supabase
         .from('gallery_photos')
         .insert([
@@ -107,10 +127,16 @@ export const useGalleryPhotos = () => {
 
       // Update local state
       setPhotos(prev => {
-        const updated = {
-          ...prev,
-          [category]: [...(prev[category] || []), url]
-        };
+        const updated = { ...prev };
+        
+        if (category.startsWith('friend-')) {
+          // For friends, replace the image entirely
+          updated[category] = [url];
+        } else {
+          // For other categories, add to existing images
+          updated[category] = [...(prev[category] || []), url];
+        }
+        
         console.log('Updated photos state:', updated);
         return updated;
       });
@@ -126,24 +152,32 @@ export const useGalleryPhotos = () => {
 
       console.log('Removing photo from database:', { category, photoUrl });
 
-      // Remove from database
-      const { error } = await supabase
-        .from('gallery_photos')
-        .delete()
-        .eq('category', category)
-        .eq('image_url', photoUrl);
+      // Only remove from database if it's not a default image
+      if (!photoUrl.startsWith('public/image/') && !photoUrl.includes('unsplash.com')) {
+        const { error } = await supabase
+          .from('gallery_photos')
+          .delete()
+          .eq('category', category)
+          .eq('image_url', photoUrl);
 
-      if (error) {
-        console.error('Error removing photo from database:', error);
-        return;
+        if (error) {
+          console.error('Error removing photo from database:', error);
+          return;
+        }
       }
 
       // Update local state
       setPhotos(prev => {
-        const updated = {
-          ...prev,
-          [category]: prev[category]?.filter((_, i) => i !== index) || []
-        };
+        const updated = { ...prev };
+        
+        if (category.startsWith('friend-')) {
+          // For friends, revert to default image
+          updated[category] = DEFAULT_IMAGES[category] || [];
+        } else {
+          // For other categories, remove the specific image
+          updated[category] = prev[category]?.filter((_, i) => i !== index) || [];
+        }
+        
         console.log('Updated photos state after removal:', updated);
         return updated;
       });

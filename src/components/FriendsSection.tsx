@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PhotoUpload } from './PhotoUpload';
@@ -14,7 +15,7 @@ export const FriendsSection = () => {
     {
       name: "Rajaryan",
       caption: "The Creative Genius",
-      avatar: photos['friend-rajaryan']?.[0] || "https://images.unsplash.com/photo-1472396961693-142e6e269027?w=300&h=300&fit=crop&crop=face",
+      fallbackAvatar: "https://images.unsplash.com/photo-1472396961693-142e6e269027?w=300&h=300&fit=crop&crop=face",
       color: "from-indigo-400 to-purple-400",
       shadowColor: "shadow-indigo-200",
       id: "friend-rajaryan"
@@ -22,7 +23,7 @@ export const FriendsSection = () => {
     {
       name: "Satish",
       caption: "Adventure Seeker",
-      avatar: photos['friend-satish']?.[0] || "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=300&h=300&fit=crop&crop=face",
+      fallbackAvatar: "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=300&h=300&fit=crop&crop=face",
       color: "from-blue-400 to-cyan-400",
       shadowColor: "shadow-blue-200",
       id: "friend-satish"
@@ -30,7 +31,7 @@ export const FriendsSection = () => {
     {
       name: "Nikhil",
       caption: "Study Partner",
-      avatar: photos['friend-nikhil']?.[0] || "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=300&h=300&fit=crop&crop=face",
+      fallbackAvatar: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=300&h=300&fit=crop&crop=face",
       color: "from-teal-400 to-emerald-400",
       shadowColor: "shadow-teal-200",
       id: "friend-nikhil"
@@ -38,7 +39,7 @@ export const FriendsSection = () => {
     {
       name: "Arnav",
       caption: "The Organizer",
-      avatar: photos['friend-arnav']?.[0] || "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=300&h=300&fit=crop&crop=face",
+      fallbackAvatar: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=300&h=300&fit=crop&crop=face",
       color: "from-purple-400 to-violet-400",
       shadowColor: "shadow-purple-200",
       id: "friend-arnav"
@@ -46,7 +47,7 @@ export const FriendsSection = () => {
     {
       name: "Misti",
       caption: "The Storyteller (OGGY)",
-      avatar: photos['friend-misti']?.[0] || "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=300&fit=crop&crop=face",
+      fallbackAvatar: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=300&fit=crop&crop=face",
       color: "from-pink-400 to-rose-400",
       shadowColor: "shadow-pink-200",
       id: "friend-misti"
@@ -54,7 +55,7 @@ export const FriendsSection = () => {
     {
       name: "Sandhya",
       caption: "The Beauty Queen",
-      avatar: photos['friend-sandhya']?.[0] || "https://images.unsplash.com/photo-1615729947596-a598e5de0ab3?w=300&h=300&fit=crop&crop=face",
+      fallbackAvatar: "https://images.unsplash.com/photo-1615729947596-a598e5de0ab3?w=300&h=300&fit=crop&crop=face",
       color: "from-indigo-400 to-blue-400",
       shadowColor: "shadow-indigo-200",
       id: "friend-sandhya"
@@ -62,27 +63,32 @@ export const FriendsSection = () => {
     {
       name: "Anugya",
       caption: "Canteen Queen",
-      avatar: photos['friend-anugya']?.[0] || "https://images.unsplash.com/photo-1488972685288-c3fd157d7c7a?w=300&h=300&fit=crop&crop=face",
+      fallbackAvatar: "https://images.unsplash.com/photo-1488972685288-c3fd157d7c7a?w=300&h=300&fit=crop&crop=face",
       color: "from-teal-400 to-cyan-400", 
       shadowColor: "shadow-teal-200",
       id: "friend-anugya"
     }
   ];
 
-  const handlePhotoUploaded = async (url: string) => {
+  const handlePhotoUploaded = (url: string) => {
     if (showUpload) {
-      // First remove any existing photos for this friend
-      if (photos[showUpload]?.[0]) {
-        await removePhoto(showUpload, 0);
-      }
-      // Then add the new photo
       addPhoto(showUpload, url);
       setShowUpload(null);
     }
   };
 
   const handleDeletePhoto = (friendId: string) => {
-    removePhoto(friendId, 0); // Remove the first (and only) photo for this friend
+    removePhoto(friendId, 0);
+  };
+
+  const getAvatar = (friend: any) => {
+    // Use uploaded photo if exists, otherwise use fallback
+    return photos[friend.id]?.[0] || friend.fallbackAvatar;
+  };
+
+  const hasUploadedPhoto = (friendId: string) => {
+    const photoUrl = photos[friendId]?.[0];
+    return photoUrl && !photoUrl.startsWith('public/image/') && !photoUrl.includes('unsplash.com');
   };
 
   if (isLoading) {
@@ -139,7 +145,7 @@ export const FriendsSection = () => {
                   <div className="text-center">
                     <div className="relative mb-6">
                       <Avatar className="w-40 h-40 mx-auto border-4 border-white shadow-md group-hover:scale-110 transition-transform duration-300">
-                        <AvatarImage src={friend.avatar} alt={friend.name} className="object-cover" />
+                        <AvatarImage src={getAvatar(friend)} alt={friend.name} className="object-cover" />
                         <AvatarFallback className="text-xl">{friend.name.slice(0, 2)}</AvatarFallback>
                       </Avatar>
                       <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${friend.color} opacity-20 group-hover:opacity-30 transition-opacity duration-300`}></div>
@@ -156,11 +162,11 @@ export const FriendsSection = () => {
                           </button>
                           
                           {/* Show delete button only if there's an uploaded photo */}
-                          {photos[friend.id]?.[0] && (
+                          {hasUploadedPhoto(friend.id) && (
                             <button
                               onClick={() => handleDeletePhoto(friend.id)}
                               className="bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors shadow-lg"
-                              title="Delete current photo"
+                              title="Delete uploaded photo"
                             >
                               <X className="w-4 h-4" />
                             </button>
